@@ -31,21 +31,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "latest"
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+
+      - name: Setup pnpm & install dependencies
+        uses: pnpm/action-setup@v4
+        with:
+          version: "latest"
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+
       - name: Build project
         run: node build.js
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository1
           path: './dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
